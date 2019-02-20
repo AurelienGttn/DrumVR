@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3009564731313266279}
   m_Layer: 0
   m_Name: DKFYB_Drumstick
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: bca5f4c1231d8c94a9eb586588d29444, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class Drumstick : MonoBehaviour
 {
+    bool triggered = false;
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("hit trigger");
-        if (other.CompareTag("Drumset")){
-            other.GetComponent<AudioSource>().Play();
+        if (!triggered)
+        {
+            if (other.CompareTag("Drumset"))
+            {
+                other.GetComponent<AudioSource>().Play();
+                triggered = true;
+            }
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        triggered = false;
     }
 }
