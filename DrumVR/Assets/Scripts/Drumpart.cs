@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Drumpart : MonoBehaviour
 {
+    private SequenceManager sqManager;
 
     private AudioSource source;
     private AudioClip sound;
@@ -16,11 +17,13 @@ public class Drumpart : MonoBehaviour
 
     void Start()
     {
+        sqManager = FindObjectOfType<SequenceManager>();
+
         source = GetComponent<AudioSource>();
         sound = GetComponent<AudioSource>().clip;
 
         // Don't show the FX at first
-        targetIndicator.Stop();
+        targetIndicator.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -29,6 +32,9 @@ public class Drumpart : MonoBehaviour
         {
             // Use PlayOneShot to be able to allow the sound to overlap
             source.PlayOneShot(sound);
+
+            // Check if this was the right part to hit
+            sqManager.CheckPartHit(this);
         }
     }
 }
