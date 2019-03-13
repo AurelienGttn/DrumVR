@@ -30,11 +30,18 @@ public class Drumpart : MonoBehaviour
     {
         if (directionCheck == null || !directionCheck.GetComponent<DirectionCheck>().wrongDirection)
         {
-            // Use PlayOneShot to be able to allow the sound to overlap
-            source.PlayOneShot(sound);
+            PlayDrumSound();
 
             // Check if this was the right part to hit
             sqManager.CheckPartHit(this);
         }
+    }
+
+    // Method to play the drum sound needs to be public to be called
+    // from the Sequence Manager
+    public void PlayDrumSound()
+    {
+        // Use PlayOneShot to allow the sounds to overlap
+        source.PlayOneShot(sound);
     }
 }

@@ -19,8 +19,10 @@ public class SequenceManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A)){
-            CreateRandomSequence(1);
+            CreateRandomSequence(5);
+            StartCoroutine(PlaySequence());
         }
+
         if (nextPartToHit != null){
             if (Input.GetKeyDown(KeyCode.B))
             {
@@ -49,8 +51,8 @@ public class SequenceManager : MonoBehaviour
             randomSequence.Add(drumParts[randomPart]);
         }
 
-        nextPartToHit = randomSequence[currentIndex];
-        GetParticleSystem(nextPartToHit).SetActive(true);
+        //nextPartToHit = randomSequence[currentIndex];
+        //GetParticleSystem(nextPartToHit).SetActive(true);
     }
 
     public void CheckPartHit(Drumpart partHit)
@@ -81,5 +83,23 @@ public class SequenceManager : MonoBehaviour
     private GameObject GetParticleSystem(Drumpart drumpart)
     {
         return drumParts[ArrayUtility.IndexOf(drumParts, drumpart)].targetIndicator.gameObject;   
+    }
+
+    private IEnumerator PlaySequence()
+    {
+        GetParticleSystem(randomSequence[currentIndex]).SetActive(true);
+        randomSequence[currentIndex].PlayDrumSound();
+
+        yield return new WaitForSeconds(0.8f);
+
+        GetParticleSystem(randomSequence[currentIndex]).SetActive(false);
+        currentIndex++;
+
+        yield return new WaitForSeconds(0.2f);
+
+        if (currentIndex < randomSequence.Count)
+        {
+            StartCoroutine(PlaySequence());
+        }
     }
 }
