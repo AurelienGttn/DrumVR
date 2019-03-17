@@ -8,6 +8,7 @@ public class Drumpart : MonoBehaviour
 
     private AudioSource source;
     private AudioClip sound;
+    private bool triggered;
 
     // Checks if the player hits the part in the right direction
     [SerializeField] private DirectionCheck directionCheck;
@@ -22,16 +23,19 @@ public class Drumpart : MonoBehaviour
         source = GetComponent<AudioSource>();
         sound = GetComponent<AudioSource>().clip;
 
+        triggered = false;
+
         // Don't show the FX at first
         targetIndicator.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (directionCheck == null || !directionCheck.GetComponent<DirectionCheck>().wrongDirection)
+        if ((directionCheck == null || !directionCheck.GetComponent<DirectionCheck>().wrongDirection) && !triggered)
         {
             PlayDrumSound();
 
+            triggered = true;
             // Check if this was the right part to hit
             sqManager.CheckPartHit(this);
         }
@@ -43,5 +47,11 @@ public class Drumpart : MonoBehaviour
     {
         // Use PlayOneShot to allow the sounds to overlap
         source.PlayOneShot(sound);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (triggered)
+            triggered = false;
     }
 }
