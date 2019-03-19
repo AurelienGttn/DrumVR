@@ -30,7 +30,7 @@ public class Drumstick : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.CompareTag("Drumset")) {
+        //if (other.CompareTag("Drumpart")) {
         //    if ((right && velocityRH.y <= 0) || 
         //        (left && velocityLH.y <= 0))
         //    {
@@ -48,7 +48,7 @@ public class Drumstick : MonoBehaviour
             }
 
             // Play the sound of the drum piece if it hit the top first
-            else if (other.CompareTag("Drumset"))
+            else if (other.CompareTag("Drumpart"))
             {
                 other.GetComponent<AudioSource>().PlayOneShot(clip);
                 //other.GetComponent<AudioSource>().Play();
@@ -66,7 +66,7 @@ public class Drumstick : MonoBehaviour
         }
 
         // Allow the stick to trigger another drum piece
-        if (other.CompareTag("Drumset"))
+        if (other.CompareTag("Drumpart"))
         {
             triggered = false;
         }

@@ -17,7 +17,7 @@ PlayerSettings:
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
-  m_ShowUnitySplashScreen: 0
+  m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
@@ -640,7 +640,7 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   cloudProjectId: 0cf46460-3476-4f5c-8381-d7164d713dda
   framebufferDepthMemorylessMode: 0
-  projectName: 
+  projectName: DrumVR
   organizationId: f19b9ff-436d-412c-833f-faac4c4d1476
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
