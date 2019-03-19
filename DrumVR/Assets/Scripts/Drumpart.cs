@@ -16,7 +16,7 @@ public class Drumpart : MonoBehaviour
     // FX to show which part to hit
     public ParticleSystem targetIndicator;
 
-    void Start()
+    void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
 

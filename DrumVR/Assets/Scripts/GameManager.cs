@@ -11,13 +11,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Drumpart[] drumParts;
     [SerializeField] private Canvas[] menuCanvas;
-    private List<Drumpart> randomSequence = new List<Drumpart>();
 
     public enum GameContext { MainMenu, FreeMode, MemoryMode, RythmMode, Menu };
     public GameContext gc;
     private SequenceManager sqManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         sqManager = FindObjectOfType<SequenceManager>();
@@ -35,16 +33,9 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     // Method to dispatch to the action associated with the drum depending on the context
     public void CheckPartHit(Drumpart partHit)
     {
-        Debug.Log("CheckPartHit in context " + gc);
         switch(gc)
         {
             case GameContext.MainMenu:
@@ -64,18 +55,15 @@ public class GameManager : MonoBehaviour
         switch(partName)
         {
             case "DKFYB_Snare_drum":
-                Debug.Log("Rythm mode");
                 // Rythm mode
                 break;
 
             case "DKFYB_Hi-hat":
-                Debug.Log("Free mode");
                 // Free mode
                 break;
 
             case "DKFYB_Crash":
                 // Memory mode
-                Debug.Log("Memory mode");
                 foreach (Canvas cv in menuCanvas)
                 {
                     cv.gameObject.SetActive(false);
@@ -98,15 +86,12 @@ public class GameManager : MonoBehaviour
 
     private void ShowParticlesOnMenuDrums(bool show)
     {
-        Debug.Log("Show particles on menu " + show);
         List<string> menuDrums = new List<string>() { "DKFYB_Snare_drum", "DKFYB_Hi-hat", "DKFYB_Crash", "DKFYB_Ride", "DKFYB_Floor_tom" };
 
         foreach (Drumpart dp in drumParts)
         {
-            Debug.Log(dp.transform.parent.name);
             if (menuDrums.Contains(dp.transform.parent.name))
             {
-                Debug.Log("YES, should light up " + dp.transform.parent.name);
                 dp.targetIndicator.gameObject.SetActive(show);
             }
 

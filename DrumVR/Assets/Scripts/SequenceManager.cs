@@ -37,8 +37,6 @@ public class SequenceManager : MonoBehaviour
                 CreateRandomSequence(sequenceLength + 1);
             else
                 CreateRandomSequence(sequenceLength);
-            StartCoroutine(PlaySequence());
-            
         }
         /*
         if (nextPartToHit != null){
@@ -74,6 +72,8 @@ public class SequenceManager : MonoBehaviour
         }
 
         nextPartToHit = randomSequence[currentIndex];
+
+        StartCoroutine(PlaySequence());
     }
 
 
@@ -81,22 +81,18 @@ public class SequenceManager : MonoBehaviour
     // and count the mistakes
     public void CheckPartHit(Drumpart partHit)
     {
-        Debug.Log("checkPartHit");
-        Debug.Log("part to hit = " + nextPartToHit.transform.parent.name);
-        Debug.Log("part hit = " + partHit.transform.parent.name);
         if (partHit == nextPartToHit)
         {
-            Debug.Log("current index = " + currentIndex);
             GetParticleSystem(partHit).SetActive(false);
             if(currentIndex < sequenceLength - 1) {
-                nextPartToHit = randomSequence[currentIndex++];
+                nextPartToHit = randomSequence[++currentIndex];
             }
             else
             {
                 sequenceEnded = true;
                 switch (mistakes) {
                     case 0:
-                        congratsText.text = "Well done!\nOnly " + mistakes + " mistakes";
+                        congratsText.text = "Well done!\nPerfect score!";
                         break;
                     case 1:
                         congratsText.text = "Well done!\nOnly " + mistakes + " mistake";
@@ -106,12 +102,10 @@ public class SequenceManager : MonoBehaviour
                         break;
                 }
                 congratsText.gameObject.SetActive(true);
-                Debug.Log("Congratulations! Only " + mistakes + " mistakes.");
             }
         }
         else
         {
-            Debug.Log("failed");
             mistakes++;
         }
     }
@@ -139,6 +133,10 @@ public class SequenceManager : MonoBehaviour
         if (currentIndex < randomSequence.Count)
         {
             StartCoroutine(PlaySequence());
+        }
+        else
+        {
+            currentIndex = 0;
         }
     }
 }
