@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.drumvr.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "D:\\DrumVR\\DrumVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\mouarnier\\Downloads\\DrumVR-Sprint2_MemorySequence\\DrumVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "DrumVR [Testing]"

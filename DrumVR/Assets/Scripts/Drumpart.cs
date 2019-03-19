@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Drumpart : MonoBehaviour
 {
-    private SequenceManager sqManager;
+    private GameManager gameManager;
 
     private AudioSource source;
     private AudioClip sound;
@@ -18,7 +18,7 @@ public class Drumpart : MonoBehaviour
 
     void Start()
     {
-        sqManager = FindObjectOfType<SequenceManager>();
+        gameManager = FindObjectOfType<GameManager>();
 
         source = GetComponent<AudioSource>();
         sound = GetComponent<AudioSource>().clip;
@@ -37,7 +37,8 @@ public class Drumpart : MonoBehaviour
 
             triggered = true;
             // Check if this was the right part to hit
-            sqManager.CheckPartHit(this);
+            //sqManager.CheckPartHit(this);
+            gameManager.CheckPartHit(this);
         }
     }
 
