@@ -7,28 +7,36 @@ using Valve.VR;
 
 public class SequenceManager : MonoBehaviour
 {
+    // Action linked to the controllers trigger
     public SteamVR_Action_Boolean grabAction;
 
+    // Keep track of all the parts we can hit
     [SerializeField] private Drumpart[] drumParts;
-    private TextMeshProUGUI congratsText;
 
+    // List to keep track of a randomly created sequence of drum parts
     private List<Drumpart> randomSequence = new List<Drumpart>();
-
+    // List of the delays between each hit for rythm mode
+    private List<float> delaySequence = new List<float>();
     public Drumpart nextPartToHit;
     private int currentIndex;
-    private int sequenceLength = 1;
+    // Time at which previous part was hit
+    private float lastHit;
+    // Tolerance interval for rythm mode
+    [SerializeField] private float timeTolerance = 0.5f;
+    // Length of the current random sequence
+    private int sequenceLength = 2;
+    // Count of the mistakes the player has made so far
     private int mistakes;
+    private TextMeshProUGUI congratsText;
     private bool sequenceEnded = false;
-
 
     private void Start()
     {
         congratsText = GameObject.Find("CongratsText").GetComponent<TextMeshProUGUI>();
-        congratsText.gameObject.SetActive(false); 
+        congratsText.gameObject.SetActive(false);
     }
        
 
-    // Only used for development
     private void Update()
     {
         if (grabAction.GetStateDown(SteamVR_Input_Sources.Any))
@@ -38,13 +46,6 @@ public class SequenceManager : MonoBehaviour
             else
                 CreateRandomSequence(sequenceLength);
         }
-        /*
-        if (nextPartToHit != null){
-            if (Input.GetAxis("Fire") > 0 || Input.GetAxis("Fire2") > 0)
-            {
-                CheckPartHit(nextPartToHit);
-            }
-        }*/
     }
 
 
@@ -64,16 +65,25 @@ public class SequenceManager : MonoBehaviour
         congratsText.gameObject.SetActive(false);
         sequenceEnded = false;
 
+        int randomPart = 0;
+
         sequenceLength = size;
         for (int i = 0; i < sequenceLength; i++)
         {
-            int randomPart = Random.Range(0, drumParts.Length);
+            if (GameManager.gc == GameManager.GameContext.MemoryMode)
+                randomPart = Random.Range(0, drumParts.Length);
+            else if (GameManager.gc == GameManager.GameContext.RythmMode)
+                randomPart = 0;
+
             randomSequence.Add(drumParts[randomPart]);
         }
 
         nextPartToHit = randomSequence[currentIndex];
 
-        StartCoroutine(PlaySequence());
+        if (GameManager.gc == GameManager.GameContext.MemoryMode)
+            StartCoroutine(PlaySequence());
+        else if (GameManager.gc == GameManager.GameContext.RythmMode)
+            StartCoroutine(PlaySequenceDelay());
     }
 
 
@@ -81,16 +91,41 @@ public class SequenceManager : MonoBehaviour
     // and count the mistakes
     public void CheckPartHit(Drumpart partHit)
     {
-        if (partHit == nextPartToHit)
+        bool rightMove = false;
+        switch (GameManager.gc)
+        {
+            case GameManager.GameContext.MemoryMode:
+                if (partHit == nextPartToHit)
+                    rightMove = true;
+                break;
+
+            case GameManager.GameContext.RythmMode:
+                // Check if the player hit the drum part in the tolerance interval
+                if (currentIndex == 0 ||
+                    (Time.time - lastHit < delaySequence[currentIndex] - timeTolerance)
+                    && Time.time - lastHit < delaySequence[currentIndex] + timeTolerance)
+                {
+                    rightMove = true;
+                    lastHit = Time.time;
+                }
+                break;
+
+            default:
+                break;
+        };
+
+        if (rightMove)
         {
             GetParticleSystem(partHit).SetActive(false);
-            if(currentIndex < sequenceLength - 1) {
+            if (currentIndex < sequenceLength - 1)
+            {
                 nextPartToHit = randomSequence[++currentIndex];
             }
             else
             {
                 sequenceEnded = true;
-                switch (mistakes) {
+                switch (mistakes)
+                {
                     case 0:
                         congratsText.text = "Well done!\nPerfect score!";
                         break;
@@ -133,6 +168,34 @@ public class SequenceManager : MonoBehaviour
         if (currentIndex < randomSequence.Count)
         {
             StartCoroutine(PlaySequence());
+        }
+        else
+        {
+            currentIndex = 0;
+        }
+    }
+
+
+    // Method to play the full random sequence
+    // with a random delay
+    private IEnumerator PlaySequenceDelay()
+    {
+        float delay = Random.Range(0.5f, 3f);
+        GetParticleSystem(randomSequence[currentIndex]).SetActive(true);
+        randomSequence[currentIndex].PlayDrumSound();
+        if (currentIndex == 0)
+            delaySequence.Add(0);
+        else
+            delaySequence.Add(delay);
+
+        yield return new WaitForSeconds(delay);
+
+        GetParticleSystem(randomSequence[currentIndex]).SetActive(false);
+        currentIndex++;
+
+        if (currentIndex < randomSequence.Count)
+        {
+            StartCoroutine(PlaySequenceDelay());
         }
         else
         {

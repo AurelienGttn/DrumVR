@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Canvas[] menuCanvas;
 
     public enum GameContext { MainMenu, FreeMode, MemoryMode, RythmMode, Menu };
-    public GameContext gc;
+    public static GameContext gc;
     private SequenceManager sqManager;
 
     void Start()
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
                 //MainMenuManager.checkPartHit(partHit);
                 CheckPartHitMainMenu(partHit);
                 break;
-            case GameContext.MemoryMode:
+            default:
                 sqManager.CheckPartHit(partHit);
                 break;
             
