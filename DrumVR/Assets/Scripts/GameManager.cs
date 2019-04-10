@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
         {
             case "DKFYB_Snare_drum":
                 // Rythm mode
+                gc = GameContext.RythmMode;
+                closeMenu();
                 break;
 
             case "DKFYB_Hi-hat":
@@ -64,13 +66,8 @@ public class GameManager : MonoBehaviour
 
             case "DKFYB_Crash":
                 // Memory mode
-                foreach (Canvas cv in menuCanvas)
-                {
-                    cv.gameObject.SetActive(false);
-                }
-                ShowParticlesOnMenuDrums(false);
                 gc = GameContext.MemoryMode;
-                sqManager.enabled = true;
+                closeMenu();
                 break;
 
             case "DKFYB_Ride":
@@ -82,6 +79,16 @@ public class GameManager : MonoBehaviour
                 Application.Quit();
                 break;
         }
+    }
+
+    private void closeMenu()
+    {
+        foreach (Canvas cv in menuCanvas)
+        {
+            cv.gameObject.SetActive(false);
+        }
+        ShowParticlesOnMenuDrums(false);
+        sqManager.enabled = true;
     }
 
     private void ShowParticlesOnMenuDrums(bool show)

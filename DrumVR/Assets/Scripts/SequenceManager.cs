@@ -60,6 +60,7 @@ public class SequenceManager : MonoBehaviour
         }
         // Clear sequence and reset index
         randomSequence.Clear();
+        delaySequence.Clear();
         currentIndex = 0;
         mistakes = 0;
         congratsText.gameObject.SetActive(false);
@@ -101,13 +102,16 @@ public class SequenceManager : MonoBehaviour
 
             case GameManager.GameContext.RythmMode:
                 // Check if the player hit the drum part in the tolerance interval
+                Debug.Log("Delay : " + (Time.time - lastHit));
+                Debug.Log(delaySequence[currentIndex]);
                 if (currentIndex == 0 ||
-                    (Time.time - lastHit < delaySequence[currentIndex] - timeTolerance)
+                    (Time.time - lastHit > delaySequence[currentIndex] - timeTolerance)
                     && Time.time - lastHit < delaySequence[currentIndex] + timeTolerance)
                 {
                     rightMove = true;
-                    lastHit = Time.time;
+                    Debug.Log("Right move");
                 }
+                lastHit = Time.time;
                 break;
 
             default:
@@ -120,6 +124,7 @@ public class SequenceManager : MonoBehaviour
             if (currentIndex < sequenceLength - 1)
             {
                 nextPartToHit = randomSequence[++currentIndex];
+                Debug.Log("Going to next index" + currentIndex);
             }
             else
             {
@@ -184,7 +189,10 @@ public class SequenceManager : MonoBehaviour
         GetParticleSystem(randomSequence[currentIndex]).SetActive(true);
         randomSequence[currentIndex].PlayDrumSound();
         if (currentIndex == 0)
+        {
             delaySequence.Add(0);
+            delaySequence.Add(delay);
+        }
         else
             delaySequence.Add(delay);
 
@@ -200,6 +208,10 @@ public class SequenceManager : MonoBehaviour
         else
         {
             currentIndex = 0;
+            foreach(float del in delaySequence)
+            {
+                Debug.Log(del);
+            }
         }
     }
 }
