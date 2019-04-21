@@ -24,18 +24,23 @@ public class SequenceManager : MonoBehaviour
     // Tolerance interval for rythm mode
     [SerializeField] private float timeTolerance = 0.5f;
     // Length of the current random sequence
-    private int sequenceLength = 2;
+    public int sequenceLength = 2;
     // Count of the mistakes the player has made so far
     private int mistakes;
+    private int totalMistakes;
+    private int score;
+
     private TextMeshProUGUI congratsText;
+    private TextMeshProUGUI scoreText;
     private bool sequenceEnded = false;
 
     private void Start()
     {
-        congratsText = GameObject.Find("CongratsText").GetComponent<TextMeshProUGUI>();
-        congratsText.gameObject.SetActive(false);
+        congratsText    = GameObject.Find("CongratsText").GetComponent<TextMeshProUGUI>();
+        scoreText       = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
+
     }
-       
+
 
     private void Update()
     {
@@ -48,9 +53,15 @@ public class SequenceManager : MonoBehaviour
         }
     }
 
+    public void StartPlaying()
+    {
+        score = 0;
+        CreateRandomSequence(sequenceLength);
+    }
+
 
     // Method to create a random sequence of parts to hit
-    private void CreateRandomSequence(int size)
+    public void CreateRandomSequence(int size)
     {
         // Remove particles from former sequence's next drum part to hit
         if (nextPartToHit != null)
@@ -114,6 +125,10 @@ public class SequenceManager : MonoBehaviour
                 lastHit = Time.time;
                 break;
 
+            case GameManager.GameContext.FreeMode:
+                score++;
+                scoreText.text = "Score : " + score;
+                break;
             default:
                 break;
         };
@@ -142,6 +157,12 @@ public class SequenceManager : MonoBehaviour
                         break;
                 }
                 congratsText.gameObject.SetActive(true);
+
+                if (sequenceLength * 2 - mistakes > 0) // We don't want to add negative scores
+                    score += sequenceLength * 2 - mistakes;
+
+                totalMistakes += mistakes;
+                scoreText.text = "Score : " + score + " Mistakes : " + totalMistakes;
             }
         }
         else
