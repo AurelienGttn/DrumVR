@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     // Action linked to the controllers menu button
     public SteamVR_Action_Boolean openMenuAction;
-    public enum GameContext { MainMenu, FreeMode, MemoryMode, RythmMode, Menu };
+    public enum GameContext { MainMenu, FreeMode, MemoryMode, RhythmMode, Menu };
     public static GameContext gc;
     public static GameContext previousContext; // Used to resume game after menu was opened
     private SequenceManager sqManager;
@@ -112,9 +112,9 @@ public class GameManager : MonoBehaviour
         switch(partName)
         {
             case "DKFYB_Snare_drum":
-                // Rythm mode
-                gc = GameContext.RythmMode;
-                sqManager.StartPlaying();
+                // Rhythm mode
+                gc = GameContext.RhythmMode;
+                sqManager.Init();
                 closeMainMenu();
                 break;
 
@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
                 // Memory mode
                 gc = GameContext.MemoryMode;
                 closeMainMenu();
-                sqManager.StartPlaying();
+                sqManager.Init();
                 break;
 
             case "DKFYB_Ride":
@@ -159,8 +159,8 @@ public class GameManager : MonoBehaviour
             case GameManager.GameContext.MemoryMode:
                 modeText.text = "Memory mode";
                 break;
-            case GameManager.GameContext.RythmMode:
-                modeText.text = "Rythm mode";
+            case GameManager.GameContext.RhythmMode:
+                modeText.text = "Rhythm mode";
                 break;
             case GameManager.GameContext.MainMenu:
                 modeText.text = "Main menu";

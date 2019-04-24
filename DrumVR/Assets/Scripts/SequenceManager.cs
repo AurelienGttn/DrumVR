@@ -15,13 +15,13 @@ public class SequenceManager : MonoBehaviour
 
     // List to keep track of a randomly created sequence of drum parts
     private List<Drumpart> randomSequence = new List<Drumpart>();
-    // List of the delays between each hit for rythm mode
+    // List of the delays between each hit for rhythm mode
     private List<float> delaySequence = new List<float>();
     public Drumpart nextPartToHit;
     private int currentIndex;
     // Time at which previous part was hit
     private float lastHit;
-    // Tolerance interval for rythm mode
+    // Tolerance interval for rhythm mode
     [SerializeField] private float timeTolerance = 0.5f;
     // Length of the current random sequence
     public int sequenceLength = 2;
@@ -30,15 +30,14 @@ public class SequenceManager : MonoBehaviour
     private int totalMistakes;
     private int score;
 
-    private TextMeshProUGUI congratsText;
+    [SerializeField] private TextMeshProUGUI congratsText;
     private TextMeshProUGUI scoreText;
     private bool sequenceEnded = false;
 
     private void Start()
     {
-        congratsText    = GameObject.Find("CongratsText").GetComponent<TextMeshProUGUI>();
         scoreText       = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
-
+        Init();
     }
 
 
@@ -53,10 +52,14 @@ public class SequenceManager : MonoBehaviour
         }
     }
 
-    public void StartPlaying()
+    public void Init()
     {
+        sequenceLength = 2;
+        sequenceEnded = false;
         score = 0;
+        mistakes = 0;
         CreateRandomSequence(sequenceLength);
+        scoreText.gameObject.SetActive(false);
     }
 
 
@@ -84,7 +87,7 @@ public class SequenceManager : MonoBehaviour
         {
             if (GameManager.gc == GameManager.GameContext.MemoryMode)
                 randomPart = Random.Range(0, drumParts.Length);
-            else if (GameManager.gc == GameManager.GameContext.RythmMode)
+            else if (GameManager.gc == GameManager.GameContext.RhythmMode)
                 randomPart = 0;
 
             randomSequence.Add(drumParts[randomPart]);
@@ -94,7 +97,7 @@ public class SequenceManager : MonoBehaviour
 
         if (GameManager.gc == GameManager.GameContext.MemoryMode)
             StartCoroutine(PlaySequence());
-        else if (GameManager.gc == GameManager.GameContext.RythmMode)
+        else if (GameManager.gc == GameManager.GameContext.RhythmMode)
             StartCoroutine(PlaySequenceDelay());
     }
 
@@ -111,22 +114,20 @@ public class SequenceManager : MonoBehaviour
                     rightMove = true;
                 break;
 
-            case GameManager.GameContext.RythmMode:
+            case GameManager.GameContext.RhythmMode:
                 // Check if the player hit the drum part in the tolerance interval
-                Debug.Log("Delay : " + (Time.time - lastHit));
-                Debug.Log(delaySequence[currentIndex]);
                 if (currentIndex == 0 ||
                     (Time.time - lastHit > delaySequence[currentIndex] - timeTolerance)
                     && Time.time - lastHit < delaySequence[currentIndex] + timeTolerance)
                 {
                     rightMove = true;
-                    Debug.Log("Right move");
                 }
                 lastHit = Time.time;
                 break;
 
             case GameManager.GameContext.FreeMode:
                 score++;
+                scoreText.gameObject.SetActive(true);
                 scoreText.text = "Score : " + score;
                 break;
             default:
@@ -139,7 +140,6 @@ public class SequenceManager : MonoBehaviour
             if (currentIndex < sequenceLength - 1)
             {
                 nextPartToHit = randomSequence[++currentIndex];
-                Debug.Log("Going to next index" + currentIndex);
             }
             else
             {
@@ -157,11 +157,13 @@ public class SequenceManager : MonoBehaviour
                         break;
                 }
                 congratsText.gameObject.SetActive(true);
+                scoreText.gameObject.SetActive(true);
 
                 if (sequenceLength * 2 - mistakes > 0) // We don't want to add negative scores
                     score += sequenceLength * 2 - mistakes;
 
                 totalMistakes += mistakes;
+
                 scoreText.text = "Score : " + score + " Mistakes : " + totalMistakes;
             }
         }
@@ -229,10 +231,6 @@ public class SequenceManager : MonoBehaviour
         else
         {
             currentIndex = 0;
-            foreach(float del in delaySequence)
-            {
-                Debug.Log(del);
-            }
         }
     }
 }
